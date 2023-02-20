@@ -196,7 +196,7 @@ func getNumbersWithProperties(m, n int, property1, property2 string) string {
 	numberFunction2 := propertiesMap[property2]
 
 	for i := m; found < n; i++ {
-		if numberFunction1(i) && numberFunction2(2) {
+		if numberFunction1(i) && numberFunction2(i) {
 			s += "\t\t" + getProperties(i) + "\n"
 			found++
 		}
