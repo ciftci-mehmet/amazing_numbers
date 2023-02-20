@@ -9,24 +9,12 @@ import (
 )
 
 func main() {
-	fmt.Println("Welcome to Amazing Numbers!")
-	fmt.Println()
-	helpText := 
-		"Supported requests:\n" +
-		" - enter a natural number to know its properties;\n" +
-		" - enter two natural numbers to obtain the properties of the list:\n" +
-		"   * the first parameter represents a starting number;\n" +
-		"   * the second parameter shows how many consecutive numbers are to be processed;\n" +
-		" - separate the parameters with one space\n" +
-		" - enter 0 to exit."
-	fmt.Println(helpText)
-	
-	scanner := bufio.NewScanner(os.Stdin)
-	for{
-		fmt.Println()
-		fmt.Println("Enter a request:")
-		scanner.Scan()
-		input := scanner.Text()
+
+	fmt.Printf("Welcome to Amazing Numbers!\n\n")
+	printHelp()
+
+	for {
+		input := requestInput()
 		fmt.Println()
 
 		if input == "0" {
@@ -35,142 +23,97 @@ func main() {
 		}
 
 		if input == "" {
-			fmt.Println(helpText)
+			printHelp()
 			continue
 		}
 
-		// multi number input check
-		numbers := strings.Split(input, " ")
-		if len(numbers) == 2 && isNaturalNumber(numbers[0]) && isNaturalNumber(numbers[1]){
-			number1, _ := strconv.Atoi(numbers[0])
-			number2, _ := strconv.Atoi(numbers[1])
+		// multiple input check
+		inputs := strings.Split(input, " ")
+		switch len(inputs) {
+		case 1:
+			if !isNaturalNumber(inputs[0]) {
+				fmt.Println("The first parameter should be a natural number or zero.")
+				continue
+			}
+
+			number, _ := strconv.Atoi(inputs[0])
+
+			fmt.Println("Properties of", number)
+			fmt.Printf("\teven: %v\n", isEvenNumber(number))
+			fmt.Printf("\todd: %v\n", isOddNumber(number))
+			fmt.Printf("\tbuzz: %v\n", isBuzzNumber(number))
+			fmt.Printf("\tduck: %v\n", isDuckNumber(number))
+			fmt.Printf("\tpalindromic: %v\n", isPalindromicNumber(number))
+
+			continue
+
+		case 2:
+			if !isNaturalNumber(inputs[0]) {
+				fmt.Println("The first parameter should be a natural number or zero.")
+				continue
+			}
+			if !isNaturalNumber(inputs[1]) {
+				fmt.Println("The second parameter should be a natural number.")
+				continue
+			}
+
+			number1, _ := strconv.Atoi(inputs[0])
+			number2, _ := strconv.Atoi(inputs[1])
 			fmt.Println(getConsecutiveProperties(number1, number2))
+
+			continue
+
+		case 3:
+			if !isNaturalNumber(inputs[0]) {
+				fmt.Println("The first parameter should be a natural number or zero.")
+				continue
+			}
+			if !isNaturalNumber(inputs[1]) {
+				fmt.Println("The second parameter should be a natural number.")
+				continue
+			}
+			_, ok := propertiesMap[inputs[2]]
+			if !ok {
+				fmt.Printf("The property [%s] is wrong.\n", inputs[2])
+				properties := ""
+				for k := range propertiesMap {
+					properties += k + ", "
+				}
+				properties = properties[:len(properties)-2]
+				fmt.Printf("Available properties: %v\n", properties)
+
+				continue
+			}
+			number1, _ := strconv.Atoi(inputs[0])
+			number2, _ := strconv.Atoi(inputs[1])
+			fmt.Println(getNumbersWithProperty(number1, number2, inputs[2]))
+
 			continue
 		}
-	
-		if !isNaturalNumber(input){
-			fmt.Println("The first parameter should be a natural number or zero.")
-			continue
-		}
-		number, _ := strconv.Atoi(input)
-	
-		fmt.Println("Properties of", number)
-		fmt.Printf("\teven: %v\n",isEvenNumber(number))
-		fmt.Printf("\todd: %v\n",isOddNumber(number))
-		fmt.Printf("\tbuzz: %v\n",isBuzzNumber(number))
-		fmt.Printf("\tduck: %v\n",isDuckNumber(number))
-		fmt.Printf("\tpalindromic: %v\n",isPalindromicNumber(number))
+
 	}
 
 }
 
-func isNaturalNumber(s string) bool{
-	number, err := strconv.Atoi(s)
-	if err != nil {
-		return false
-	}
-
-	if number < 1 {
-		return false
-	}
-
-	return true
+func printHelp() {
+	helpText :=
+		"Supported requests:\n" +
+			" - enter a natural number to know its properties;\n" +
+			" - enter two natural numbers to obtain the properties of the list:\n" +
+			"   * the first parameter represents a starting number;\n" +
+			"   * the second parameter shows how many consecutive numbers are to be processed;\n" +
+			" - two natural numbers and a property to search for;\n" +
+			" - separate the parameters with one space\n" +
+			" - enter 0 to exit."
+	fmt.Println(helpText)
 }
 
-func isEvenNumber(n int) bool{
-	return n % 2 == 0
-}
+func requestInput() string {
+	scanner := bufio.NewScanner(os.Stdin)
 
-func isOddNumber(n int) bool{
-	return n %2 == 1
-}
+	fmt.Println()
+	fmt.Printf("Enter a request: ")
+	scanner.Scan()
 
-func isBuzzNumber(n int) bool{
-	if n % 7 == 0{
-		return true
-	}
-
-	if n % 10 == 7{
-		return true
-	}
-	
-	return false
-}
-
-func isDuckNumber(n int) bool{
-	s := strconv.Itoa(n)
-
-	for i := 0; i < len(s); i++ {
-		if s[i] == '0'{
-			return true
-		}
-	}
-
-	return false
-}
-
-func isPalindromicNumber(n int) bool{
-	s := strconv.Itoa(n)
-
-	length := len(s)
-	for i := 0; i < length/2; i++ {
-		if s[i] != s[length-i-1] {
-			return false
-		}
-	}
-
-	return true
-}
-
-func isGapfulNumber(n int) bool{
-	if n < 100{
-		return false
-	}
-
-	s := strconv.Itoa(n)
-	first, _ := strconv.Atoi(string(s[0]) )
-	last := n%10
-	concatenation := (first * 10) + last
-
-	return n % concatenation == 0
-}
-
-func getProperties(n int) string{
-	s := strconv.Itoa(n)
-	s += " is "
-
-	if isEvenNumber(n) {
-		s += "even" + ", "
-	}
-	if isOddNumber(n) {
-		s += "odd" + ", "
-	}
-	if isDuckNumber(n) {
-		s += "duck" + ", "
-	}
-	if isBuzzNumber(n) {
-		s += "buzz" + ", "
-	}
-	if isPalindromicNumber(n) {
-		s += "palindromic" + ", "
-	}
-	if isGapfulNumber(n) {
-		s += "gapful" + ", "
-	}
-
-	// trim last 2 chars ", " from the string
-	s = s[:len(s)-2]
-	return s
-}
-
-func getConsecutiveProperties(m, n int) string{
-	var s string
-
-	for i := m; i < m+n; i++ {
-		s += "\t\t" + getProperties(i) + "\n"
-	}
-
-	// trim last newline char from the string
-	s = s[:len(s)-1]
-	return s
+	return scanner.Text()
 }

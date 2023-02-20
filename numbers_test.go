@@ -142,3 +142,23 @@ func TestIsGapfulNumber(t *testing.T) {
 		}
 	}
 }
+
+func TestIsSpyNumber(t *testing.T) {
+	tables := []struct {
+		input int
+		want  bool
+	}{
+		{1, true},
+		{12, false},
+		{22, true},
+		{132, true},
+		{325, false},
+	}
+
+	for _, table := range tables {
+		got := isSpyNumber(table.input)
+		if got != table.want {
+			t.Errorf("Incorrect, \ninput: %v,\n want: %v, \n  got: %v", table.input, table.want, got)
+		}
+	}
+}
