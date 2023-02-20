@@ -27,15 +27,16 @@ func main() {
 			continue
 		}
 
-		// multiple input check
 		inputs := strings.Split(input, " ")
+
+		isValid, message := isInputsValid(inputs)
+		if !isValid{
+			fmt.Println(message)
+			continue
+		}
+
 		switch len(inputs) {
 		case 1:
-			if !isNaturalNumber(inputs[0]) {
-				fmt.Println("The first parameter should be a natural number or zero.")
-				continue
-			}
-
 			number, _ := strconv.Atoi(inputs[0])
 
 			fmt.Println("Properties of", number)
@@ -48,15 +49,6 @@ func main() {
 			continue
 
 		case 2:
-			if !isNaturalNumber(inputs[0]) {
-				fmt.Println("The first parameter should be a natural number or zero.")
-				continue
-			}
-			if !isNaturalNumber(inputs[1]) {
-				fmt.Println("The second parameter should be a natural number.")
-				continue
-			}
-
 			number1, _ := strconv.Atoi(inputs[0])
 			number2, _ := strconv.Atoi(inputs[1])
 			fmt.Println(getConsecutiveProperties(number1, number2))
@@ -64,26 +56,6 @@ func main() {
 			continue
 
 		case 3:
-			if !isNaturalNumber(inputs[0]) {
-				fmt.Println("The first parameter should be a natural number or zero.")
-				continue
-			}
-			if !isNaturalNumber(inputs[1]) {
-				fmt.Println("The second parameter should be a natural number.")
-				continue
-			}
-			_, ok := propertiesMap[inputs[2]]
-			if !ok {
-				fmt.Printf("The property [%s] is wrong.\n", inputs[2])
-				properties := ""
-				for k := range propertiesMap {
-					properties += k + ", "
-				}
-				properties = properties[:len(properties)-2]
-				fmt.Printf("Available properties: %v\n", properties)
-
-				continue
-			}
 			number1, _ := strconv.Atoi(inputs[0])
 			number2, _ := strconv.Atoi(inputs[1])
 			fmt.Println(getNumbersWithProperty(number1, number2, inputs[2]))
@@ -116,4 +88,43 @@ func requestInput() string {
 	scanner.Scan()
 
 	return scanner.Text()
+}
+
+func isInputsValid(inputs []string) (bool, string){
+	switch len(inputs) {
+	case 1:
+		if !isNaturalNumber(inputs[0]) {
+			return false, "The first parameter should be a natural number or zero."
+		}
+	
+	case 2:
+		if !isNaturalNumber(inputs[0]) {
+			return false, "The first parameter should be a natural number or zero."
+		}
+		if !isNaturalNumber(inputs[1]) {
+			return false, "The second parameter should be a natural number."
+		}
+
+	case 3:
+		if !isNaturalNumber(inputs[0]) {
+			return false, "The first parameter should be a natural number or zero."
+		}
+		if !isNaturalNumber(inputs[1]) {
+			return false, "The second parameter should be a natural number."
+		}
+		_, ok := propertiesMap[inputs[2]]
+		if !ok {
+			
+			message := fmt.Sprintf("The property [%s] is wrong.\n", inputs[2])
+			properties := ""
+			for k := range propertiesMap {
+				properties += k + ", "
+			}
+			properties = properties[:len(properties)-2]
+			message += fmt.Sprintf("Available properties: %v", properties)
+
+			return false, message
+		}
+	}
+	return true, ""
 }
