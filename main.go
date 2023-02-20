@@ -152,5 +152,8 @@ func isMutuallyExlusive(s1, s2 string) bool {
 	if (s1 == "square" && s2 == "sunny") || (s1 == "sunny" && s2 == "square") {
 		return true
 	}
+	if (s1 == "duck" && s2 == "spy") || (s1 == "spy" && s2 == "duck") {
+		return true
+	}
 	return false
 }
