@@ -1,6 +1,9 @@
 package main
 
-import "strconv"
+import (
+	"math"
+	"strconv"
+)
 
 var propertiesMap = map[string]func(int) bool{
 	"even":        isEvenNumber,
@@ -10,6 +13,17 @@ var propertiesMap = map[string]func(int) bool{
 	"palindromic": isPalindromicNumber,
 	"gapful":      isGapfulNumber,
 	"spy":         isSpyNumber,
+	"square":      isSquareNumber,
+	"sunny":       isSunnyNumber,
+}
+
+func getAllProperties() string {
+	properties := ""
+	for k := range propertiesMap {
+		properties += k + ", "
+	}
+	properties = properties[:len(properties)-2]
+	return properties
 }
 
 func isNaturalNumber(s string) bool {
@@ -97,6 +111,16 @@ func isSpyNumber(n int) bool {
 	return sumOfDigits == productOfDigits
 }
 
+func isSquareNumber(n int) bool {
+	x := math.Sqrt(float64(n))
+
+	return x == float64(int64(x))
+}
+
+func isSunnyNumber(n int) bool {
+	return isSquareNumber(n + 1)
+}
+
 func getProperties(n int) string {
 	s := strconv.Itoa(n)
 	s += " is "
@@ -122,6 +146,12 @@ func getProperties(n int) string {
 	if isSpyNumber(n) {
 		s += "spy" + ", "
 	}
+	if isSquareNumber(n) {
+		s += "square" + ", "
+	}
+	if isSunnyNumber(n) {
+		s += "sunny" + ", "
+	}
 
 	// trim last 2 chars ", " from the string
 	s = s[:len(s)-2]
@@ -140,7 +170,7 @@ func getConsecutiveProperties(m, n int) string {
 	return s
 }
 
-func getNumbersWithProperty(m, n int, property string) string{
+func getNumbersWithProperty(m, n int, property string) string {
 	var s string
 	found := 0
 
@@ -148,6 +178,25 @@ func getNumbersWithProperty(m, n int, property string) string{
 
 	for i := m; found < n; i++ {
 		if numberFunction(i) {
+			s += "\t\t" + getProperties(i) + "\n"
+			found++
+		}
+	}
+
+	// trim last newline char from the string
+	s = s[:len(s)-1]
+	return s
+}
+
+func getNumbersWithProperties(m, n int, property1, property2 string) string {
+	var s string
+	found := 0
+
+	numberFunction1 := propertiesMap[property1]
+	numberFunction2 := propertiesMap[property2]
+
+	for i := m; found < n; i++ {
+		if numberFunction1(i) && numberFunction2(2) {
 			s += "\t\t" + getProperties(i) + "\n"
 			found++
 		}

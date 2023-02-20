@@ -162,3 +162,43 @@ func TestIsSpyNumber(t *testing.T) {
 		}
 	}
 }
+
+func TestIsSquareNumber(t *testing.T) {
+	tables := []struct {
+		input int
+		want  bool
+	}{
+		{9, true},
+		{16, true},
+		{25, true},
+		{26, false},
+		{32, false},
+	}
+
+	for _, table := range tables {
+		got := isSquareNumber(table.input)
+		if got != table.want {
+			t.Errorf("Incorrect, \ninput: %v,\n want: %v, \n  got: %v", table.input, table.want, got)
+		}
+	}
+}
+
+func TestIsSunnyNumber(t *testing.T) {
+	tables := []struct {
+		input int
+		want  bool
+	}{
+		{4, false},
+		{8, true},
+		{15, true},
+		{24, true},
+		{25, false},
+	}
+
+	for _, table := range tables {
+		got := isSunnyNumber(table.input)
+		if got != table.want {
+			t.Errorf("Incorrect, \ninput: %v,\n want: %v, \n  got: %v", table.input, table.want, got)
+		}
+	}
+}

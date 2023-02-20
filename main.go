@@ -30,7 +30,7 @@ func main() {
 		inputs := strings.Split(input, " ")
 
 		isValid, message := isInputsValid(inputs)
-		if !isValid{
+		if !isValid {
 			fmt.Println(message)
 			continue
 		}
@@ -45,6 +45,10 @@ func main() {
 			fmt.Printf("\tbuzz: %v\n", isBuzzNumber(number))
 			fmt.Printf("\tduck: %v\n", isDuckNumber(number))
 			fmt.Printf("\tpalindromic: %v\n", isPalindromicNumber(number))
+			fmt.Printf("\tgapful: %v\n", isGapfulNumber(number))
+			fmt.Printf("\tspy: %v\n", isSpyNumber(number))
+			fmt.Printf("\tsquare: %v\n", isSquareNumber(number))
+			fmt.Printf("\tsunny: %v\n", isSunnyNumber(number))
 
 			continue
 
@@ -59,6 +63,13 @@ func main() {
 			number1, _ := strconv.Atoi(inputs[0])
 			number2, _ := strconv.Atoi(inputs[1])
 			fmt.Println(getNumbersWithProperty(number1, number2, inputs[2]))
+
+			continue
+
+		case 4:
+			number1, _ := strconv.Atoi(inputs[0])
+			number2, _ := strconv.Atoi(inputs[1])
+			fmt.Println(getNumbersWithProperties(number1, number2, inputs[2], inputs[3]))
 
 			continue
 		}
@@ -91,18 +102,18 @@ func requestInput() string {
 	return scanner.Text()
 }
 
-func isInputsValid(inputs []string) (bool, string){
+func isInputsValid(inputs []string) (bool, string) {
 	switch len(inputs) {
 	case 4:
+		if isMutuallyExlusive(inputs[3], inputs[2]) {
+			message := "The request contains mutually exclusive properties: [" + inputs[3] + ", " + inputs[2] + "]\n"
+			message += "There are no numbers with these properties."
+			return false, message
+		}
 		_, ok := propertiesMap[inputs[3]]
 		if !ok {
-			
 			message := fmt.Sprintf("The property [%s] is wrong.\n", inputs[3])
-			properties := ""
-			for k := range propertiesMap {
-				properties += k + ", "
-			}
-			properties = properties[:len(properties)-2]
+			properties := getAllProperties()
 			message += fmt.Sprintf("Available properties: %v", properties)
 
 			return false, message
@@ -112,19 +123,14 @@ func isInputsValid(inputs []string) (bool, string){
 	case 3:
 		_, ok := propertiesMap[inputs[2]]
 		if !ok {
-			
 			message := fmt.Sprintf("The property [%s] is wrong.\n", inputs[2])
-			properties := ""
-			for k := range propertiesMap {
-				properties += k + ", "
-			}
-			properties = properties[:len(properties)-2]
+			properties := getAllProperties()
 			message += fmt.Sprintf("Available properties: %v", properties)
 
 			return false, message
 		}
 		fallthrough
-		
+
 	case 2:
 		if !isNaturalNumber(inputs[1]) {
 			return false, "The second parameter should be a natural number."
@@ -137,4 +143,14 @@ func isInputsValid(inputs []string) (bool, string){
 		}
 	}
 	return true, ""
+}
+
+func isMutuallyExlusive(s1, s2 string) bool {
+	if (s1 == "odd" && s2 == "even") || (s1 == "even" && s2 == "odd") {
+		return true
+	}
+	if (s1 == "square" && s2 == "sunny") || (s1 == "sunny" && s2 == "square") {
+		return true
+	}
+	return false
 }
