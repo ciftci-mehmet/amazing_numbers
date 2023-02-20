@@ -16,7 +16,7 @@ func TestIsNaturalNumber(t *testing.T) {
 	for _, table := range tables {
 		got := isNaturalNumber(table.input)
 		if got != table.want {
-			t.Errorf("Incorrect, \ninput: %v,\nwant: %v, \n got: %v", table.input, table.want, got)
+			t.Errorf("Incorrect, \ninput: %v,\n want: %v, \n  got: %v", table.input, table.want, got)
 		}
 	}
 }
@@ -37,7 +37,7 @@ func TestIsEvenNumber(t *testing.T) {
 	for _, table := range tables {
 		got := isEvenNumber(table.input)
 		if got != table.want {
-			t.Errorf("Incorrect, \ninput: %v,\nwant: %v, \n got: %v", table.input, table.want, got)
+			t.Errorf("Incorrect, \ninput: %v,\n want: %v, \n  got: %v", table.input, table.want, got)
 		}
 	}
 }
@@ -58,7 +58,7 @@ func TestIsOddNumber(t *testing.T) {
 	for _, table := range tables {
 		got := isOddNumber(table.input)
 		if got != table.want {
-			t.Errorf("Incorrect, \ninput: %v,\nwant: %v, \n got: %v", table.input, table.want, got)
+			t.Errorf("Incorrect, \ninput: %v,\n want: %v, \n  got: %v", table.input, table.want, got)
 		}
 	}
 }
@@ -79,7 +79,7 @@ func TestIsBuzzNumber(t *testing.T) {
 	for _, table := range tables {
 		got := isBuzzNumber(table.input)
 		if got != table.want {
-			t.Errorf("Incorrect, \ninput: %v,\nwant: %v, \n got: %v", table.input, table.want, got)
+			t.Errorf("Incorrect, \ninput: %v,\n want: %v, \n  got: %v", table.input, table.want, got)
 		}
 	}
 }
@@ -98,7 +98,7 @@ func TestIsDuckNumber(t *testing.T) {
 	for _, table := range tables {
 		got := isDuckNumber(table.input)
 		if got != table.want {
-			t.Errorf("Incorrect, \ninput: %v,\nwant: %v, \n got: %v", table.input, table.want, got)
+			t.Errorf("Incorrect, \ninput: %v,\n want: %v, \n  got: %v", table.input, table.want, got)
 		}
 	}
 }
@@ -119,7 +119,26 @@ func TestIsPalindromicNumber(t *testing.T) {
 	for _, table := range tables {
 		got := isPalindromicNumber(table.input)
 		if got != table.want {
-			t.Errorf("Incorrect, \ninput: %v,\nwant: %v, \n got: %v", table.input, table.want, got)
+			t.Errorf("Incorrect, \ninput: %v,\n want: %v, \n  got: %v", table.input, table.want, got)
+		}
+	}
+}
+
+func TestIsGapfulNumber(t *testing.T) {
+	tables := []struct {
+		input int
+		want  bool
+	}{
+		{12, false},
+		{123, false},
+		{132, true},
+		{7881, true},
+	}
+
+	for _, table := range tables {
+		got := isGapfulNumber(table.input)
+		if got != table.want {
+			t.Errorf("Incorrect, \ninput: %v,\n want: %v, \n  got: %v", table.input, table.want, got)
 		}
 	}
 }
