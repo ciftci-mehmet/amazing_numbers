@@ -1,8 +1,12 @@
 package main
 
 import (
+	"fmt"
 	"math"
 	"strconv"
+
+	"golang.org/x/text/language"
+	"golang.org/x/text/message"
 )
 
 var propertiesMap = map[string]func(int) bool{
@@ -15,15 +19,9 @@ var propertiesMap = map[string]func(int) bool{
 	"spy":         isSpyNumber,
 	"square":      isSquareNumber,
 	"sunny":       isSunnyNumber,
-}
-
-func getAllProperties() string {
-	properties := ""
-	for k := range propertiesMap {
-		properties += k + ", "
-	}
-	properties = properties[:len(properties)-2]
-	return properties
+	"jumping":     isJumpingNumber,
+	"happy":       isHappyNumber,
+	"sad":         isSadNumber,
 }
 
 func isNaturalNumber(s string) bool {
@@ -121,36 +119,49 @@ func isSunnyNumber(n int) bool {
 	return isSquareNumber(n + 1)
 }
 
+func isJumpingNumber(n int) bool {
+	var i int
+	for i = n; i > 9; i /= 10 {
+		if math.Abs(float64((i%10)-((i/10)%10))) != 1 {
+			return false
+		}
+	}
+	return true
+}
+
+func isHappyNumber(n int) bool {
+	var sum, digit int
+	lastNumber := n
+	checkedNumbers := make(map[int]bool)
+	for {
+		if _, ok := checkedNumbers[lastNumber]; ok {
+			return false
+		}
+		if sum == 1 {
+			return true
+		}
+		sum = 0
+		for i := lastNumber; i > 0; i /= 10 {
+			digit = i % 10
+			sum += digit * digit
+		}
+		checkedNumbers[lastNumber] = true
+		lastNumber = sum
+	}
+}
+
+func isSadNumber(n int) bool {
+	return !isHappyNumber(n)
+}
+
 func getProperties(n int) string {
-	s := strconv.Itoa(n)
+	s := formatNumber(n)
 	s += " is "
 
-	if isEvenNumber(n) {
-		s += "even" + ", "
-	}
-	if isOddNumber(n) {
-		s += "odd" + ", "
-	}
-	if isDuckNumber(n) {
-		s += "duck" + ", "
-	}
-	if isBuzzNumber(n) {
-		s += "buzz" + ", "
-	}
-	if isPalindromicNumber(n) {
-		s += "palindromic" + ", "
-	}
-	if isGapfulNumber(n) {
-		s += "gapful" + ", "
-	}
-	if isSpyNumber(n) {
-		s += "spy" + ", "
-	}
-	if isSquareNumber(n) {
-		s += "square" + ", "
-	}
-	if isSunnyNumber(n) {
-		s += "sunny" + ", "
+	for k, f := range propertiesMap {
+		if f(n) {
+			s += k + ", "
+		}
 	}
 
 	// trim last 2 chars ", " from the string
@@ -170,14 +181,32 @@ func getConsecutiveProperties(m, n int) string {
 	return s
 }
 
-func getNumbersWithProperty(m, n int, property string) string {
+func getNumbersWithMultiProperties(m, n int, properties []string) string {
 	var s string
 	found := 0
 
-	numberFunction := propertiesMap[property]
+	for i := m; found < n; i++ { // loop until found enough numbers
+		satisfyConditions := true
 
-	for i := m; found < n; i++ {
-		if numberFunction(i) {
+		for j := 0; j < len(properties); j++ { // loop filtered properties
+
+			if properties[j][0] == '-' {
+				numberFunc := propertiesMap[properties[j][1:len(properties[j])]]
+				if numberFunc(i) {
+					satisfyConditions = false
+					break
+				}
+			} else {
+				numberFunc := propertiesMap[properties[j]]
+				if !numberFunc(i) {
+					satisfyConditions = false
+					break
+				}
+			}
+
+		}
+
+		if satisfyConditions {
 			s += "\t\t" + getProperties(i) + "\n"
 			found++
 		}
@@ -188,21 +217,89 @@ func getNumbersWithProperty(m, n int, property string) string {
 	return s
 }
 
-func getNumbersWithProperties(m, n int, property1, property2 string) string {
+func getSingleNumberProperties(n int) string {
 	var s string
-	found := 0
 
-	numberFunction1 := propertiesMap[property1]
-	numberFunction2 := propertiesMap[property2]
+	s += fmt.Sprintf("Properties of %v\n", formatNumber(n))
 
-	for i := m; found < n; i++ {
-		if numberFunction1(i) && numberFunction2(i) {
-			s += "\t\t" + getProperties(i) + "\n"
-			found++
-		}
+	for k, f := range propertiesMap {
+		s += fmt.Sprintf("\t%v: %v\n", k, f(n))
 	}
 
 	// trim last newline char from the string
 	s = s[:len(s)-1]
+	return s
+}
+
+func getAllProperties() string {
+	properties := ""
+	for k := range propertiesMap {
+		properties += k + ", "
+	}
+	properties = properties[:len(properties)-2]
+	return properties
+}
+
+func contains(haystack []string, needle string) bool {
+	for _, s := range haystack {
+		if s == needle {
+			return true
+		}
+	}
+	return false
+}
+
+func checkMutualExlusivity(inputProperties []string) (bool, string) {
+	if contains(inputProperties, "odd") && contains(inputProperties, "even") {
+		return true, "[ODD, EVEN]"
+	}
+	if contains(inputProperties, "-odd") && contains(inputProperties, "-even") {
+		return true, "[-ODD, -EVEN]"
+	}
+	if contains(inputProperties, "-odd") && contains(inputProperties, "odd") {
+		return true, "[-ODD, ODD]"
+	}
+	if contains(inputProperties, "-even") && contains(inputProperties, "even") {
+		return true, "[-EVEN, EVEN]"
+	}
+
+	if contains(inputProperties, "square") && contains(inputProperties, "sunny") {
+		return true, "[SQUARE, SUNNY]"
+	}
+	if contains(inputProperties, "-square") && contains(inputProperties, "square") {
+		return true, "[-SQUARE, SQUARE]"
+	}
+	if contains(inputProperties, "-sunny") && contains(inputProperties, "sunny") {
+		return true, "[-SUNNY, SUNNY]"
+	}
+
+	if contains(inputProperties, "duck") && contains(inputProperties, "spy") {
+		return true, "[DUCK, SPY]"
+	}
+	if contains(inputProperties, "-duck") && contains(inputProperties, "duck") {
+		return true, "[-DUCK, DUCK]"
+	}
+	if contains(inputProperties, "-spy") && contains(inputProperties, "spy") {
+		return true, "[-SPY, SPY]"
+	}
+
+	if contains(inputProperties, "happy") && contains(inputProperties, "sad") {
+		return true, "[HAPPY, SAD]"
+	}
+	if contains(inputProperties, "-happy") && contains(inputProperties, "-sad") {
+		return true, "[-HAPPY, -SAD]"
+	}
+	if contains(inputProperties, "-happy") && contains(inputProperties, "happy") {
+		return true, "[-HAPPY, HAPPY]"
+	}
+	if contains(inputProperties, "-sad") && contains(inputProperties, "sad") {
+		return true, "[-SAD, SAD]"
+	}
+	return false, ""
+}
+
+func formatNumber(n int) string {
+	np := message.NewPrinter(language.English)
+	s := np.Sprintf("%d", n)
 	return s
 }

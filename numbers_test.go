@@ -202,3 +202,60 @@ func TestIsSunnyNumber(t *testing.T) {
 		}
 	}
 }
+
+func TestIsJumpingNumber(t *testing.T) {
+	tables := []struct {
+		input int
+		want  bool
+	}{
+		{4, true},
+		{9, true},
+		{24, false},
+		{796, false},
+		{78987, true},
+		{89098, false},
+		{4343456, true},
+	}
+
+	for _, table := range tables {
+		got := isJumpingNumber(table.input)
+		if got != table.want {
+			t.Errorf("Incorrect, \ninput: %v,\n want: %v, \n  got: %v", table.input, table.want, got)
+		}
+	}
+}
+
+func TestIsHappyNumber(t *testing.T) {
+	tables := []struct {
+		input int
+		want  bool
+	}{
+		{4, false},
+		{13, true},
+		{15, false},
+	}
+
+	for _, table := range tables {
+		got := isHappyNumber(table.input)
+		if got != table.want {
+			t.Errorf("Incorrect, \ninput: %v,\n want: %v, \n  got: %v", table.input, table.want, got)
+		}
+	}
+}
+
+func TestIsSadNumber(t *testing.T) {
+	tables := []struct {
+		input int
+		want  bool
+	}{
+		{4, true},
+		{13, false},
+	}
+
+	for _, table := range tables {
+		got := isSadNumber(table.input)
+		if got != table.want {
+			t.Errorf("Incorrect, \ninput: %v,\n want: %v, \n  got: %v", table.input, table.want, got)
+		}
+	}
+}
