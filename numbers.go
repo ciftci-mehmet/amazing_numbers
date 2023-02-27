@@ -256,31 +256,13 @@ func checkMutualExlusivity(inputProperties []string) (bool, string) {
 	if contains(inputProperties, "-odd") && contains(inputProperties, "-even") {
 		return true, "[-ODD, -EVEN]"
 	}
-	if contains(inputProperties, "-odd") && contains(inputProperties, "odd") {
-		return true, "[-ODD, ODD]"
-	}
-	if contains(inputProperties, "-even") && contains(inputProperties, "even") {
-		return true, "[-EVEN, EVEN]"
-	}
 
 	if contains(inputProperties, "square") && contains(inputProperties, "sunny") {
 		return true, "[SQUARE, SUNNY]"
 	}
-	if contains(inputProperties, "-square") && contains(inputProperties, "square") {
-		return true, "[-SQUARE, SQUARE]"
-	}
-	if contains(inputProperties, "-sunny") && contains(inputProperties, "sunny") {
-		return true, "[-SUNNY, SUNNY]"
-	}
 
 	if contains(inputProperties, "duck") && contains(inputProperties, "spy") {
 		return true, "[DUCK, SPY]"
-	}
-	if contains(inputProperties, "-duck") && contains(inputProperties, "duck") {
-		return true, "[-DUCK, DUCK]"
-	}
-	if contains(inputProperties, "-spy") && contains(inputProperties, "spy") {
-		return true, "[-SPY, SPY]"
 	}
 
 	if contains(inputProperties, "happy") && contains(inputProperties, "sad") {
@@ -289,12 +271,45 @@ func checkMutualExlusivity(inputProperties []string) (bool, string) {
 	if contains(inputProperties, "-happy") && contains(inputProperties, "-sad") {
 		return true, "[-HAPPY, -SAD]"
 	}
+
+	// Direct opposites
+	if contains(inputProperties, "-even") && contains(inputProperties, "even") {
+		return true, "[-EVEN, EVEN]"
+	}
+	if contains(inputProperties, "-odd") && contains(inputProperties, "odd") {
+		return true, "[-ODD, ODD]"
+	}
+	if contains(inputProperties, "-buzz") && contains(inputProperties, "buzz") {
+		return true, "[-BUZZ, BUZZ]"
+	}
+	if contains(inputProperties, "-duck") && contains(inputProperties, "duck") {
+		return true, "[-DUCK, DUCK]"
+	}
+	if contains(inputProperties, "-palindromic") && contains(inputProperties, "palindromic") {
+		return true, "[-PALINDROMIC, PALINDROMIC]"
+	}
+	if contains(inputProperties, "-gapful") && contains(inputProperties, "gapful") {
+		return true, "[-GAPFUL, GAPFUL]"
+	}
+	if contains(inputProperties, "-spy") && contains(inputProperties, "spy") {
+		return true, "[-SPY, SPY]"
+	}
+	if contains(inputProperties, "-square") && contains(inputProperties, "square") {
+		return true, "[-SQUARE, SQUARE]"
+	}
+	if contains(inputProperties, "-sunny") && contains(inputProperties, "sunny") {
+		return true, "[-SUNNY, SUNNY]"
+	}
+	if contains(inputProperties, "-jumping") && contains(inputProperties, "jumping") {
+		return true, "[-JUMPING, JUMPING]"
+	}
 	if contains(inputProperties, "-happy") && contains(inputProperties, "happy") {
 		return true, "[-HAPPY, HAPPY]"
 	}
 	if contains(inputProperties, "-sad") && contains(inputProperties, "sad") {
 		return true, "[-SAD, SAD]"
 	}
+
 	return false, ""
 }
 

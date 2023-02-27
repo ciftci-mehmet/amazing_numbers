@@ -4,4 +4,4 @@ Objectives in the pdf
 
 go test ./...
 
-go run ./
+go run .
