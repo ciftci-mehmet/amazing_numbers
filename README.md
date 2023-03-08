@@ -1,7 +1,7 @@
 # amazing_numbers
 
-Objectives in the pdf
+git clone https://github.com/ciftci-mehmet/amazing_numbers.git
 
-go test ./...
+cd amazing_numbers/
 
 go run .
